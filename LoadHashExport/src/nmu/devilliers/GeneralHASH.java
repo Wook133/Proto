@@ -3,6 +3,9 @@ package nmu.devilliers;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.channels.FileChannel;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.bouncycastle.jcajce.provider.digest.SHA3.Digest256;
@@ -26,6 +29,7 @@ import java.security.cert.X509Certificate;
 import java.util.Scanner;
 
 public class GeneralHASH {
+
     public GeneralHASH() throws NoSuchAlgorithmException {
         /*String plainString = "Hello world, my name is john";
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
@@ -51,8 +55,8 @@ public class GeneralHASH {
             String shash = hashToString(hashedString);
             System.out.println(hashToUse);
             System.out.println(sinput + " --> " + sout);
-            System.out.println(sinput + " --> " + shash);
-            System.out.println("Byte:" + hashedString.toString());
+           // System.out.println(sinput + " --> " + shash);
+            //System.out.println("Byte:" + hashedString.toString());
             System.out.println("________________________________________________");
         }
         catch (Exception e) {
@@ -88,7 +92,7 @@ public class GeneralHASH {
         String sPasthash = "";
         try
         {
-            FileInputStream fin = new FileInputStream(sFileInput);
+            FileInputStream fin = new FileInputStream(sFileInput+".txt");
             try (BufferedInputStream in = new BufferedInputStream(fin))
             {
                 byte[] bbuf = new byte[bsize];
@@ -96,7 +100,7 @@ public class GeneralHASH {
                 while ((len = in.read(bbuf)) != -1) {
                     // process data here: bbuf[0] thru bbuf[len - 1]
                     scur = hashToString(bbuf);//scur == hexadecimal ascii
-                    System.out.print(scur);
+                   // System.out.print(scur);
                     scurHash = HashnoPrint(scur, hashToUse);
                     sHash = sHash + scurHash;
                    // sPasthash = sPasthash + scurHash;
@@ -107,12 +111,58 @@ public class GeneralHASH {
             fin.close();
             System.out.println(hashToUse + " --> " + sHash);
             System.out.println("________________________________________________");
-            return sOut;
+            return sHash;
         }
         catch (Exception e)
         {
-            return sOut;
+            return sHash;
         }
+    }
+
+    public String entireFileReaderHash(String sFileInput, String hashToUse) throws NoSuchAlgorithmException
+    {
+        String sOut = "";
+        String scur = "";
+        String scurHash = "";
+        String sHash = "";
+        String sPasthash = "";
+        try
+        {
+            MessageDigest messageDigest = MessageDigest.getInstance(hashToUse);
+            FileInputStream fin = new FileInputStream(sFileInput+".txt");
+            byte[] hashedString = messageDigest.digest(fin.readAllBytes());
+            String sin = hashToString(hashedString);
+            sHash = HashnoPrint(sin, hashToUse);
+
+
+            System.out.println();
+            fin.close();
+            System.out.println(hashToUse + " --> " + sHash);
+            System.out.println("________________________________________________");
+            return sHash;
+        }
+        catch (Exception e)
+        {
+            return sHash;
+        }
+    }
+
+    public long inputSize(String sFileInput)
+    {
+        long il = 0;
+        try {
+            //
+            Path imageFilePath = Paths.get("C:/Users/Jack/Desktop/LoadHashExport/LoadHashExport/LoadExportHash/" + sFileInput+".txt");
+           // Path imageFilePath = Paths.get("X:/University/2018/Prototypes/LoadHashExport/" + sFileInput+".txt");
+            //"X:/University/2018/Prototypes/LoadHashExport/" + sFileInput+".txt"
+            FileChannel imageFileChannel = FileChannel.open(imageFilePath);
+            il = imageFileChannel.size();
+        }
+        catch (Exception e)
+        {
+            return il;
+        }
+        return il;
     }
 
 
