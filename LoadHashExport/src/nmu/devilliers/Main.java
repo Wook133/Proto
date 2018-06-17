@@ -25,14 +25,15 @@ public class Main {
         HashFunctions.add("SHA3-384");
         HashFunctions.add("SHA3-512");
 
-        MerkleTree mt = new MerkleTree();
+
+      /*  MerkleTree mt = new MerkleTree();
         for (int i = 0; i <= 15; i++)
         {
             mt.addHashes(String.valueOf(i));
         }
 
         mt.buildTree(HashFunctions.get(0));
-        System.out.println("I am a Merkle Root: "+ mt.getMerkleRoot());
+        System.out.println("I am a Merkle Root: "+ mt.getMerkleRoot());*/
 
 
        /* gh.Hash("Hello", "SHA-1");
@@ -46,30 +47,31 @@ public class Main {
         gh.Hash("Hello", "SHA3-384");
         gh.Hash("Hello", "SHA3-512");*/
 
-        /*long start = 0;
+        long start = 0;
         long end = 0;
         long time = 0;
 
-        for (int i = 10; i <= 17; i++)//input file
+        for (int i = 30; i <= 20; i++)//input file
         {
             for (int j = 0; j <= HashFunctions.size() - 1; j++)//hash function
             {
-                for (int k = 3; k <= 10; k++)//buffer size
-                {
-                    Double il = Math.pow(4, k * 1.00);
+               // for (int k = 3; k <= 10; k++)//buffer size
+                //{
+                  //  Double il = Math.pow(4, k * 1.00);
                     start = System.currentTimeMillis();
-                    String s = gh.naiveFileReaderHash(String.valueOf(i), HashFunctions.get(j), il.intValue());
+                    //String s = gh.naiveFileReaderHash(String.valueOf(i), HashFunctions.get(j), il.intValue());
+                    String s = gh.entireFileReaderHash(String.valueOf(i), HashFunctions.get(j));
                     System.out.println(s);
                     end = System.currentTimeMillis();
                     time = end - start;
                     long lis = gh.inputSize(String.valueOf(i));
                     Integer los = s.length();
-                    experiment curExp = new experiment(lis, los, HashFunctions.get(j), il.intValue(), time);
-                    System.out.println(i + " : " + j + " : " + k + " : " + curExp.toString());
-                    writeCsvFile("doYourThing.csv", curExp);
-                }
+                    experiment curExp = new experiment(lis, los, HashFunctions.get(j), 0, time);
+                    System.out.println(i + " : " + j + " : " + 0 + " : " + curExp.toString());
+                    writeCsvFile("unbufferedHASHTHING.csv", curExp);
+              //  }
             }
-        }*/
+        }
 
 
 
@@ -96,27 +98,29 @@ public class Main {
             System.out.println(e.toString());
         }*/
 
-        /*try {
-            for (int i = 11; i <= 17; i++)
-            {
+        try {
+            for (int i = 18; i <= 1; i++) {
                 Double il = Math.pow(2.00, i * 1.00);
                 System.out.println(il);
                 String s = String.valueOf(i);
+                GenerateDifferentSizeFiles gdsf = new GenerateDifferentSizeFiles();
                 start = System.currentTimeMillis();
                 gdsf.givenWritingToFile_whenUsingFileChannel_thenCorrect(s, il.intValue());
                 end = System.currentTimeMillis();
                 System.out.println("Time Other: " + ((end - start)) + " milliseconds");
 
             }
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.toString());
+        }
             /*start = System.currentTimeMillis();
             gdsf.givenWritingToFile_whenUsingFileChannel_thenCorrect("fast", 8096);
             end = System.currentTimeMillis();
             System.out.println("Time Other: " + ((end - start)) + " milliseconds");*/
           //}
-     /* catch (Exception e)
-        {
-            System.out.println(e.toString());
-        }*/
+
 
 
 

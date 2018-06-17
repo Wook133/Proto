@@ -52,12 +52,12 @@ public class GeneralHASH {
             for (int i = 0; i < hashedString.length; i++) {
                 sout.append(Integer.toString((hashedString[i] & 0xff) + 0x100, 16).substring(1));
             }
-            String shash = hashToString(hashedString);
-            System.out.println(hashToUse);
-            System.out.println(sinput + " --> " + sout);
+            //String shash = hashToString(hashedString);
+            //System.out.println(hashToUse);
+            //System.out.println(sinput + " --> " + sout);
            // System.out.println(sinput + " --> " + shash);
             //System.out.println("Byte:" + hashedString.toString());
-            System.out.println("________________________________________________");
+            //System.out.println("________________________________________________");
         }
         catch (Exception e) {
             return sOut;
@@ -92,7 +92,8 @@ public class GeneralHASH {
         String sPasthash = "";
         try
         {
-            FileInputStream fin = new FileInputStream(sFileInput+".txt");
+           // FileInputStream fin = new FileInputStream(sFileInput+".txt");
+            FileInputStream fin = new FileInputStream(sFileInput);
             try (BufferedInputStream in = new BufferedInputStream(fin))
             {
                 byte[] bbuf = new byte[bsize];
