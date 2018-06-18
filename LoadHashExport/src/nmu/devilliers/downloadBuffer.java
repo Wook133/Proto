@@ -10,6 +10,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.security.NoSuchAlgorithmException;
 
+import javafx.util.Pair;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -20,7 +21,17 @@ public class downloadBuffer {
         //bufferDownloadOutput();
        // System.out.println(bufferDown("", ""));
         String s = bufferDown("http://horriblesubs.info/images/b/Giveaway4BE.jpg", false);
-        String sp = pow(s, "SHA3-256", 0);
+        long ip = pow(s, "SHA3-256", "0");
+        /*try
+        {
+            GeneralHASH gHash = new GeneralHASH();
+            String sOut = gHash.HashnoPrint("2661938bec379fc6bf18fb06b8ce93e8ed95daa2259ffca59a41810703db61b26939","SHA3-256");
+            System.out.println(sOut);
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }*/
     }
 
     public static void bufferDownloadOutput()
@@ -89,7 +100,7 @@ public class downloadBuffer {
         return sout;
     }
 
-    public static String pow(String sIn, String sHashToUse, int iNonceNum)
+    public static String hashYourself(String sIn, String sHashToUse, int iNonceNum)
     {
         String sOut = "";
         Boolean b = false;
@@ -111,6 +122,32 @@ public class downloadBuffer {
         }
 
         return sOut;
+    }
+
+    public static long pow(String sIn, String sHashToUse, String sNonce)
+    {
+        long iAns = -1;
+
+        try {
+            String sAttempt = "";
+            GeneralHASH gHash = new GeneralHASH();
+
+            while (sAttempt.startsWith(sNonce) == false)
+            {
+                iAns = iAns + 1;
+                sAttempt = gHash.HashnoPrint(sIn+iAns, sHashToUse);
+                if (sAttempt.startsWith(sNonce) == false) {
+                    System.out.println("Failure: " + sAttempt);
+                }
+            }
+            System.out.println("POW (" + iAns + ") :  " + sAttempt);
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+        return iAns;
+
     }
 
 }
