@@ -1,6 +1,7 @@
 package nmu.devilliers;
 
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -50,6 +51,29 @@ public class GenerateDifferentSizeFiles {
         }
         stream.close();
         channel.close();
+    }
+
+    public void writeInputFile(String sFileName)
+    {
+        try {
+            FileWriter fileWriter = new FileWriter(sFileName, true);;
+            String NEW_LINE_SEPARATOR = "%n";
+            for (int i = 0; i <= 999; i++) {
+                long lnum = SecureRandom.getInstanceStrong().nextLong();
+                String slong = String.valueOf(lnum);
+                GeneralHASH gh = new GeneralHASH();
+                String s = gh.HashnoPrint(slong, "SHA3-256");
+                fileWriter.append(s);
+                fileWriter.append(System.lineSeparator());
+            }
+            fileWriter.flush();
+            fileWriter.close();
+        }
+        catch (Exception e) {
+            System.out.println(e);
+        }
+
+
     }
 
 

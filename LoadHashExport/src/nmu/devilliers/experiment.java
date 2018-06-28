@@ -20,7 +20,6 @@ public class experiment
     {
       //  return "Experiment [inputLength=" + inputLength + ", outputLength =" + outputLength + ", sAlgorithm =" + sAlgorithm +", buffersize =" + buffersize + ", time =" +time + "]";
         return sAlgorithm + ", " + inputLength + ", " + outputLength + ", " + buffersize + ", " + time;
-
     }
 
 }

@@ -4,8 +4,9 @@ import java.util.ArrayList;
 
 public class MerkleTree
 {
-    ArrayList<String> listHashes = new ArrayList<String>();//list of leaf nodes
-    public merkleNode merkleRoot;//root of merkle tree
+    private ArrayList<String> listHashes = new ArrayList<String>();//list of leaf nodes
+    private merkleNode merkleRoot;//root of merkle tree
+    private Boolean treeBuilt;
     private static class merkleNode
     {
         merkleNode left;
@@ -29,6 +30,17 @@ public class MerkleTree
             left = mnleft;
             right = mnright;
         }
+
+        Boolean isEqual(merkleNode mnOther)
+        {
+            Boolean b = false;
+            if (this.sHashData.equals(mnOther.sHashData))
+            {
+                b = true;
+            }
+            return b;
+        }
+
     }
 
     public void setMerkleRoot(String sin)
@@ -42,12 +54,18 @@ public class MerkleTree
 
     }
 
+    public int lengthList()
+    {
+        return this.listHashes.size();
+    }
+
 
     /**
      * Initializes empty tree
      */
     public void MerkleTree()
     {
+        treeBuilt = false;
         merkleRoot = null;
         listHashes.clear();
     }
@@ -87,12 +105,22 @@ public class MerkleTree
         merkleNode Parent = new merkleNode();
     }*/
 
+    public String getLeaf(int i)
+    {
+        if ((i >= 0) && (i < lengthList()))
+        {
+            return listHashes.get(i);
+        }
+        else
+            return "";
+    }
+
     public void buildTree(String HashToUse)
     {
         int inumLeaves = listHashes.size();
         int iadd = AmountToAdd(LogOfBase(2, listHashes.size()), 2);
        // System.out.println("Iadd: " + iadd);
-        //if there are not enough leaves to make a perfect binary merkle tree then pad it
+        //if there are not enough leaves to make a perfect binary merkle tree then pad it with a specific element
         if (iadd != 0) {
             String sPad = listHashes.get(0);
             for (int j = 0; j <= iadd - 1; j++)
@@ -172,6 +200,7 @@ public class MerkleTree
                 setMerkleRoot(alGrandParents.get(0).sHashData);
               //  merkleRoot.sHashData = alGrandParents.get(0).sHashData;
             }
+            treeBuilt = true;
 
 
 
@@ -179,37 +208,7 @@ public class MerkleTree
 
 
 
-            /**while (m == 0)
-            {
-                if (alParents.size() == 1)
-                {
-                    merkleRoot = alParents.get(0);
-                    System.out.println(merkleRoot.sHashData);
-                }
-                else if (alGrandParents.size() == 1)
-                {
-                    merkleRoot = alGrandParents.get(0);
-                    System.out.println(merkleRoot.sHashData);
-                }
-                for (int k = 0; k < alParents.size() - 2; k++) {
-                    String scurHash = gh.Hash(alParents.get(k).sHashData + alParents.get(k + 1).sHashData, HashToUse);
-                    System.out.println(scurHash);
-                    merkleNode curNode = new merkleNode(scurHash);
-                    alGrandParents.add(curNode);
-                    System.out.println("M: " + m + " K: " + k);
-                }
-                alParents.clear();
-                for (int n = 0; n < alGrandParents.size() - 2; n++) {
-                    String scurHash = gh.Hash(alGrandParents.get(n).sHashData + alGrandParents.get(n + 1).sHashData, HashToUse);
-                    System.out.println(scurHash);
-                    merkleNode curNode = new merkleNode(scurHash);
-                    alParents.add(curNode);
-                    System.out.println("M: " + m + " N: " + n);
-                }
 
-                alGrandParents.clear();
-                m = m + 1;
-            }**/
 
 
         }
@@ -218,6 +217,38 @@ public class MerkleTree
             System.out.println(ex);
         }
     }
+
+    /**while (m == 0)
+     {
+     if (alParents.size() == 1)
+     {
+     merkleRoot = alParents.get(0);
+     System.out.println(merkleRoot.sHashData);
+     }
+     else if (alGrandParents.size() == 1)
+     {
+     merkleRoot = alGrandParents.get(0);
+     System.out.println(merkleRoot.sHashData);
+     }
+     for (int k = 0; k < alParents.size() - 2; k++) {
+     String scurHash = gh.Hash(alParents.get(k).sHashData + alParents.get(k + 1).sHashData, HashToUse);
+     System.out.println(scurHash);
+     merkleNode curNode = new merkleNode(scurHash);
+     alGrandParents.add(curNode);
+     System.out.println("M: " + m + " K: " + k);
+     }
+     alParents.clear();
+     for (int n = 0; n < alGrandParents.size() - 2; n++) {
+     String scurHash = gh.Hash(alGrandParents.get(n).sHashData + alGrandParents.get(n + 1).sHashData, HashToUse);
+     System.out.println(scurHash);
+     merkleNode curNode = new merkleNode(scurHash);
+     alParents.add(curNode);
+     System.out.println("M: " + m + " N: " + n);
+     }
+
+     alGrandParents.clear();
+     m = m + 1;
+     }**/
 
     /**
      Recursive insert -- given a node pointer, recur down and
@@ -267,6 +298,49 @@ public class MerkleTree
             double dinPlay = Math.pow(base * 1.00, din);
             double difference = Math.pow(base * 1.00, ceiling) - dinPlay;
             return (int)difference;
+        }
+    }
+
+    /**
+     * Compare Whether 2 trees are identical, if roots of trees are the same then compare leaves
+     * @param OtherTree
+     * @return true if leaves and roots are the same else false
+     */
+    public Boolean compareTrees(MerkleTree OtherTree)
+    {
+        if (this.treeBuilt == OtherTree.treeBuilt == true)
+        {
+            if (!(this.merkleRoot.isEqual(OtherTree.merkleRoot)))
+            {
+                return false;
+            }
+            else
+            {
+                int icountHashes = lengthList();
+                int icountOtherHashes = OtherTree.lengthList();
+                if (icountHashes == icountOtherHashes)//automatically false if the size of the lists differs
+                {
+                    for (int i = 0; i <= icountHashes - 1; i++)
+                    {
+                        String s = this.getLeaf(i);
+                        String sOther = OtherTree.getLeaf(i);
+                        if (!(s.equals(sOther)))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            System.out.println("Either Tree has not been built");
+            return false;
         }
     }
 
