@@ -4,7 +4,7 @@ import javafx.util.Pair;
 
 import java.util.ArrayList;
 
-public class deVillSource {
+public class deVillSource extends Leaf {
     private String HashofFile;
     private String Timestamp;
     private String SizeofFile;
@@ -12,31 +12,65 @@ public class deVillSource {
     private String OriginalURL;
     private ArrayList<Pair<String,String>> listMeta = new ArrayList<Pair<String,String>>();
     private ArrayList<String> moreLinks = new ArrayList<String>();
+    private Integer sizeofSource;
+    private Long LSize;
 
     public deVillSource(String hashofFile, String timestamp, String sizeofFile, String pkAdder, String originalURL) {
-        HashofFile = hashofFile;
-        Timestamp = timestamp;
-        SizeofFile = sizeofFile;
-        this.pkAdder = pkAdder;
-        OriginalURL = originalURL;
+       // LSize = (long)hashofFile.length() + (long)timestamp.length() + (long)sizeofFile.length() + (long)pkAdder.length() + (long)originalURL.length();
+        //if (LSize < maxNumberBytes) {
+            HashofFile = hashofFile;
+            Timestamp = timestamp;
+            SizeofFile = sizeofFile;
+            this.pkAdder = pkAdder;
+            OriginalURL = originalURL;
+        //}
     }
 
     public Pair<String, String> removeMeta(int i)
     {
+
+        //Pair<String, String> pCur = listMeta.get(i);
+        //LSize = LSize - ((pCur.getKey().length()) +(pCur.getValue().length()));
+        //pCur = null;
         return listMeta.remove(i);
     }
     public String removeLink(int i)
     {
+       // String s = moreLinks.get(i);
+       // LSize = LSize - (s.length());
+       // s = null;
         return moreLinks.remove(i);
     }
 
-    public void addMeta(Pair<String, String> i)
+    public Boolean addMeta(Pair<String, String> i)
     {
-        listMeta.add(i);
+       // Long size = Long.valueOf(i.getKey().length() + i.getValue().length());
+        //Long ltemp = size + LSize;
+       // if (ltemp < maxNumberBytes)
+       // {
+      //      LSize = ltemp;
+        if (listMeta.size() < 1000)
+        {
+            listMeta.add(i);
+            return true;
+        }
+        else
+            return false;
     }
-    public void addLink(String i)
+    public Boolean addLink(String i)
     {
-        moreLinks.add(i);
+       // Long size = Long.valueOf(i.length());
+        //Long ltemp = size + LSize;
+       // if (ltemp < maxNumberBytes)
+       // {
+       //     LSize = ltemp;
+        if (moreLinks.size() < 1000)
+        {
+            moreLinks.add(i);
+            return true;
+        }
+        else
+            return false;
     }
 
 
@@ -96,6 +130,7 @@ public class deVillSource {
         this.moreLinks = moreLinks;
     }
 
+    @Override
     public String toString()
     {
         String sout = "";
@@ -117,6 +152,61 @@ public class deVillSource {
         sout = sout + "_" + stemp;
         return sout;
     }
+
+    @Override
+    public String Type() {
+        return "deVill_Source";
+    }
+
+    @Override
+    public Boolean equalsTo(Leaf obj1) {
+        String s = this.toString();
+        String sObj = obj1.toString();
+        return (s.equals(sObj));
+
+    }
+
+    @Override
+    public Integer compareTo(Leaf obj1) {
+        String s = this.toString();
+        String sObj = obj1.toString();
+        return (s.compareTo(sObj));
+    }
+
+
+    @Override
+    public ArrayList<Pair<String, String>> toArraylistPairForSending()
+    {
+        ArrayList<Pair<String, String>> listout = new ArrayList<Pair<String, String>>();
+        /*
+        private String OriginalURL;
+        private ArrayList<Pair<String,String>> listMeta = new ArrayList<Pair<String,String>>();
+        private ArrayList<String> moreLinks = new ArrayList<String>();
+        */
+        Pair<String, String> pairCur = new Pair<>("Hash", HashofFile);
+        listout.add(pairCur);
+        pairCur = new Pair<>("Timestamp", Timestamp);
+        listout.add(pairCur);
+        pairCur = new Pair<>("Size of File", SizeofFile);
+        listout.add(pairCur);
+        pairCur = new Pair<>("Primary Key Adder", pkAdder);
+        listout.add(pairCur);
+        pairCur = new Pair<>("Original Url", OriginalURL);
+        listout.add(pairCur);
+        for (int i = 0; i <= listMeta.size() - 1; i++)
+        {
+            pairCur = new Pair<>(listMeta.get(i).getKey(), listMeta.get(i).getValue());
+            listout.add(pairCur);
+        }
+        for (int i = 0; i <= moreLinks.size() - 1; i++)
+        {
+            pairCur = new Pair<>("Link " + i + ": ", moreLinks.get(i));
+            listout.add(pairCur);
+        }
+        return listout;
+    }
+
+
 
 
 }
