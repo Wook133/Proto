@@ -12,6 +12,8 @@ public abstract class Leaf
     public abstract ArrayList<Pair<String, String>> toArraylistPairForSending();
     public abstract String toString();
     public abstract String Type();
+    public abstract String PrimaryKeyOfCreator();
+
 
 
 }

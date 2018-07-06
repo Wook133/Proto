@@ -41,6 +41,11 @@ public class ProofOfWork
 
     }
 
+    /**
+     *
+     * @param ipos identifies where the pattern occurs. 0 -> Start; 1 -> Anywhere; 2 -> End
+     * @return
+     */
     public long pow(int ipos)
     {
         long iAns = -1;

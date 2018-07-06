@@ -3,6 +3,7 @@ package nmu.devilliers;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class deVillSource extends Leaf {
     private String HashofFile;
@@ -156,6 +157,11 @@ public class deVillSource extends Leaf {
     @Override
     public String Type() {
         return "deVill_Source";
+    }
+
+    @Override
+    public String PrimaryKeyOfCreator() {
+        return pkAdder;
     }
 
     @Override

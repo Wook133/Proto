@@ -58,7 +58,12 @@ public class TimerServer {
             System.out.println(e);
         }
         return 0;
+    }
 
+    public static String toStringGetTime()
+    {
+        long time = getTime();
+        return String.valueOf(time);
     }
 
 
