@@ -11,13 +11,14 @@ public class Node<T> {
     //builder method
     //method to broadcast e.g. to string which builder reads
     //find depth of a leaf
-    //find depths of all leaves
-    //find longest path to leaves
-    //remove "edge" between
-    //remove node completely
-    //Searches/Traversal: In order/Post Order/Pre Order depth-first search, Breadth first search
-    //Check for Cycles/Loops
+    //Done find depths of all leaves
+    //Done find longest path to leaves
+    //Done remove "edge" between
+    //DONE: remove node completely
+    //DONE: Searches/Traversal: In order/Post Order/Pre Order depth-first search, Breadth first search
+    //No Need: Check for Cycles/Loops
     //DONE: get root
+    //Done: get Path between nodes
 
 
     private T data = null;

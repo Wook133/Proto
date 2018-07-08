@@ -16,9 +16,9 @@
 
 package nmu.devilliers.Tree;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.*;
+
+import static java.util.Collections.addAll;
 
 /**
  * Implementation of the K-ary (multi node) tree data structure,
@@ -89,6 +89,7 @@ public class LinkedMultiTreeNode<T> extends MultiTreeNode<T> {
 
 	/**
 	 * Adds the subtree with all of its descendants to the current tree node
+     * as long as subtree is not Ancestor of this tree thus avoiding cycles
 	 * <p>
 	 * {@code null} subtree cannot be added, in this case return result will
 	 * be {@code false}
@@ -104,15 +105,19 @@ public class LinkedMultiTreeNode<T> extends MultiTreeNode<T> {
 		if (subtree == null) {
 			return false;
 		}
-		linkParent(subtree, this);
-		if (isLeaf()) {
-			leftMostNode = (LinkedMultiTreeNode<T>) subtree;
-			lastSubtreeNode = leftMostNode;
-		} else {
-			lastSubtreeNode.rightSiblingNode = (LinkedMultiTreeNode<T>) subtree;
-			lastSubtreeNode = lastSubtreeNode.rightSiblingNode;
-		}
-		return true;
+		if (!(subtree.isAncestorOf(this)))
+        {
+            linkParent(subtree, this);
+            if (isLeaf()) {
+                leftMostNode = (LinkedMultiTreeNode<T>) subtree;
+                lastSubtreeNode = leftMostNode;
+            } else {
+                lastSubtreeNode.rightSiblingNode = (LinkedMultiTreeNode<T>) subtree;
+                lastSubtreeNode = lastSubtreeNode.rightSiblingNode;
+            }
+            return true;
+        }
+        return false;
 	}
 
 	/**
@@ -367,7 +372,6 @@ public class LinkedMultiTreeNode<T> extends MultiTreeNode<T> {
 			action.perform(this);
 		}
 	}
-
 	/**
 	 * Returns the height of the current tree node, e.g. the number of edges
 	 * on the longest downward path between that node and a leaf
@@ -390,6 +394,115 @@ public class LinkedMultiTreeNode<T> extends MultiTreeNode<T> {
 		}
 		return height + 1;
 	}
+
+	public TreeNode<T> printTree()
+    {
+        if (height() == this.level())
+            return this;
+        LinkedMultiTreeNode<T> nextNode = leftMostNode;
+        while (nextNode != null)
+        {
+            if (height() == nextNode.level())
+                return nextNode;
+            nextNode = nextNode.rightSiblingNode;
+        }
+        return this;
+    }
+
+    /**
+     * Find the furthest leaf from a given node
+     * @return furthest leaf from node
+     */
+    public TreeNode<T> findFurthestLeaf()
+    {
+        Collection<? extends TreeNode<T>> collectionLeaves = findAllLeaves();
+        int iheight = height();
+        for (TreeNode<T> tns : collectionLeaves)
+        {
+            if (iheight == tns.level())
+            {
+                return tns;
+            }
+        }
+        return root();
+    }
+
+    /**
+     * Find the furthest leaf from a given node
+     * @return furthest leaf from node
+     */
+    public ArrayList<TreeNode<T>> findAllFurthestLeaves()
+    {
+        Collection<? extends TreeNode<T>> collectionLeaves = findAllLeaves();
+        ArrayList<TreeNode<T>> furthestLeaves = new ArrayList<>();
+        int iheight = height();
+        for (TreeNode<T> tns : collectionLeaves)
+        {
+            if (iheight == tns.level())
+            {
+                furthestLeaves.add(tns);
+            }
+        }
+        return furthestLeaves;
+    }
+
+   /*public Collection<? extends TreeNode<T>> pathBetweenNodes(TreeNode<T> node)
+    {
+        ArrayList<TreeNode<T>> nodePath = new ArrayList<>();
+        if (isAncestorOf(node))
+        {
+            return path(node);
+        }
+        else if (isDescendantOf(node))
+        {
+            return node.path(this);
+        }
+        TreeNode<T> commonAncestor = this.commonAncestor(node);
+
+        Collection<? extends TreeNode<T>> pathCAtoThis = new LinkedList<>();
+        pathCAtoThis = commonAncestor.path(this);
+        Collection<? extends TreeNode<T>> pathCAtoNode = new LinkedList<>();
+        pathCAtoNode = commonAncestor.path(node);
+
+        return nodePath;
+    }*/
+
+
+    /*public LinkedMultiTreeNode<T> getfurthestLeaf()
+    {
+        int iheight = height();
+        System.out.println("Height: " + iheight);
+        int icounter = 1;
+        LinkedMultiTreeNode<T> nextNode = leftMostNode;
+        System.out.println("Node: " + icounter + " : " + nextNode.data());
+        icounter = icounter+1;
+
+        while (nextNode != null)
+        {
+            if ((nextNode.isLeaf()) && (nextNode.level() == iheight))
+                return nextNode;
+            nextNode = rightSiblingNode;
+        }
+
+        while (nextNode != null)
+        {
+            if ((nextNode.isLeaf()) && (nextNode.level() == iheight))
+                return nextNode;
+            while (nextNode.rightSiblingNode != null) {
+                nextNode = nextNode.rightSiblingNode;
+                System.out.println("Node: " + icounter + " : " + nextNode.data());
+                icounter = icounter+1;
+                if ((nextNode.isLeaf()) && (nextNode.level() == iheight))
+                    return nextNode;
+            }
+            nextNode = leftMostNode;
+            System.out.println("Node: " + icounter + " : " + nextNode.data());
+            icounter = icounter+1;
+        }
+        return this;
+    }*/
+
+
 
 	/**
 	 * Returns the collection of nodes, which have the same parent

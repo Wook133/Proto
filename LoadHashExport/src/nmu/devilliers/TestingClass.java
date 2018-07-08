@@ -1,13 +1,12 @@
 package nmu.devilliers;
 
 import javafx.util.Pair;
-import nmu.devilliers.Tree.ArrayMultiTreeNode;
+import nmu.devilliers.Trash.deVillSource;
 import nmu.devilliers.Tree.LinkedMultiTreeNode;
 import nmu.devilliers.Tree.TreeNode;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 public class TestingClass {
     public static void main(String[] args)
@@ -156,9 +155,12 @@ public class TestingClass {
         TreeNode<String> g = new LinkedMultiTreeNode <>("G");
         TreeNode<String> h = new LinkedMultiTreeNode <>("H");
         TreeNode<String> i = new LinkedMultiTreeNode <>("I");
+        TreeNode<String> j = new LinkedMultiTreeNode <>("J");
+        TreeNode<String> k = new LinkedMultiTreeNode <>("K");
 
         f.add(b);
         f.add(g);
+        f.add(k);
 
         b.add(a);
         b.add(d);
@@ -170,24 +172,78 @@ public class TestingClass {
 
         i.add(h);
 
-        Collection<? extends TreeNode<String>> preOrderedCollection = f.preOrdered();
-        Collection<? extends TreeNode<String>> postOrderedCollection = f.postOrdered();
+        c.add(j);
 
-       /* for (TreeNode<String> tns : preOrderedCollection)
+
+
+
+        System.out.println(((LinkedMultiTreeNode<String>) f).toString());
+
+        System.out.println("Height: " + f.height());
+        System.out.println("Level: " + j.level());
+        TreeNode<String> furthest = ((LinkedMultiTreeNode<String>) f).findFurthestLeaf();
+        System.out.println("Furthest Node: " + furthest.data());
+
+        TreeNode<String> ca = c.commonAncestor(g);
+        System.out.println("Common Node: " + ca.data());
+
+        ca = g.commonAncestor(c);
+        System.out.println("Common Node: " + ca.data());
+        Collection<? extends TreeNode<String>> path = j.pathBetweenNodes(b);
+        for (TreeNode<String> tns : path)
         {
-            System.out.println(tns.data().toString() + " . ");
-        }*/
+            System.out.print(tns.data().toString() + " -> ");
+            //Path: f -> b -> d -> e
+        }
+        System.out.println();
+        path = k.pathBetweenNodes(j);
+        for (TreeNode<String> tns : path)
+        {
+            System.out.print(tns.data().toString() + " -> ");
+            //Path: f -> b -> d -> e
+        }
+        System.out.println();
+        path = j.pathBetweenNodes(k);
+        for (TreeNode<String> tns : path)
+        {
+            System.out.print(tns.data().toString() + " -> ");
+            //Path: f -> b -> d -> e
+        }
+
+
+
+
+        /*Collection<? extends TreeNode<String>> preOrderedCollection = f.preOrdered();
+        Collection<? extends TreeNode<String>> postOrderedCollection = f.postOrdered();
+        //Collection<? extends TreeNode<String>> inOrderedCollection = f.inOrdered();
+
+        for (TreeNode<String> tns : preOrderedCollection)
+        {
+            System.out.print(tns.data().toString() + " . ");
+            //Pre-order: F, B, A, D, C, E, G, I, H.
+        }
+
+        System.out.println();
+
+        for (TreeNode<String> tns : postOrderedCollection)
+        {
+            System.out.print(tns.data().toString() + " - ");
+            //Post-order: A, C, E, D, B, H, I, G, F.
+        }
+
+        System.out.println();
+
 
 // Iterating over the tree elements using foreach
-        for (TreeNode<String> node : f) {
+        /*for (TreeNode<String> node : f) {
             System.out.println(node.data()); // any other action goes here
-        }
+        }*/
 
 // Iterating over the tree elements using Iterator
-        Iterator<TreeNode<String>> iterator = f.iterator();
+       /* Iterator<TreeNode<String>> iterator = f.iterator();
         while (iterator.hasNext()) {
             TreeNode<String> node = iterator.next();
-        }
+        }*/
 
 
 
@@ -199,5 +255,18 @@ public class TestingClass {
 
 
     }
+
+    /*public static void preorder(LinkedMultiTreeNode node)
+    {
+        if (node.isLeaf())
+        {
+            return;
+        }
+        System.out.println(node.data().toString() + " ");
+        preorder(node.leftMostNode);
+        preorder(node.rightSiblingNode);
+    }*/
+
+
 
 }

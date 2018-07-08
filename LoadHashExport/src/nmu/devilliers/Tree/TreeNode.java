@@ -297,6 +297,37 @@ public abstract class TreeNode<T> implements Iterable<TreeNode<T>>, Serializable
 		return searchedNodes;
 	}
 
+    /**
+     *
+     * Searches the tree nodes within the tree, which have the specified data,
+     * starting from the current tree node and returns the collection of the found
+     * tree node leaves
+     *
+     *
+     *@return collection of the searched tree nodes which are leaf nodes
+     **/
+
+    public Collection<? extends TreeNode<T>> findAllLeaves() {
+        if (isLeaf()) {
+            return Collections.singleton(this);
+        }
+        final Collection<TreeNode<T>> searchedNodes = new HashSet<>();
+        traversePreOrder(new TraversalAction<TreeNode<T>>() {
+            @Override
+            public void perform(TreeNode<T> node) {
+                if (node.isLeaf()) {
+                    searchedNodes.add(node);
+                }
+            }
+
+            @Override
+            public boolean isCompleted() {
+                return false;
+            }
+        });
+        return searchedNodes;
+    }
+
 	/**
 	 * Checks whether among the current tree node subtrees there is
 	 * a specified subtree
@@ -441,6 +472,18 @@ public abstract class TreeNode<T> implements Iterable<TreeNode<T>>, Serializable
 		}
 	}
 
+	public void traverseInOrder(TraversalAction<TreeNode<T>> action)
+    {
+        if (!action.isCompleted()) {
+            action.perform(this);
+            if (!isLeaf()) {
+                for (TreeNode<T> subtree : subtrees()) {
+                    subtree.traverseInOrder(action);
+                }
+            }
+        }
+    }
+
 	/**
 	 * Traverses the tree in a post ordered manner starting from the
 	 * current tree node and performs the traversal action on each
@@ -477,6 +520,7 @@ public abstract class TreeNode<T> implements Iterable<TreeNode<T>>, Serializable
 		return mPreOrdered;
 	}
 
+
 	/**
 	 * Returns the post ordered collection of nodes of the current tree
 	 * starting from the current tree node
@@ -493,6 +537,16 @@ public abstract class TreeNode<T> implements Iterable<TreeNode<T>>, Serializable
 		traversePostOrder(action);
 		return mPostOrdered;
 	}
+
+    public Collection<TreeNode<T>> inOrdered() {
+        if (isLeaf()) {
+            return Collections.singleton(this);
+        }
+        final Collection<TreeNode<T>> mInOrdered = new ArrayList<>();
+        TraversalAction<TreeNode<T>> action = populateAction(mInOrdered);
+        traverseInOrder(action);
+        return mInOrdered;
+    }
 
 	/**
 	 * Returns the collection of nodes, which connect the current node
@@ -529,6 +583,61 @@ public abstract class TreeNode<T> implements Iterable<TreeNode<T>>, Serializable
 				"The specified tree node %1$s is not the descendant of tree node %2$s", descendant, this);
 		throw new TreeNodeException(message);
 	}
+
+    public Collection<? extends TreeNode<T>>  pathBetweenNodes(TreeNode<T> node)
+    {
+        List<TreeNode<T>> nodePath = new LinkedList<>();
+        if (this.isAncestorOf(node))
+        {
+            return path(node);
+        }
+        else if (this.isDescendantOf(node))
+        {
+            return node.path(this);
+        }
+        /*else if (node.isAncestorOf(this))
+        {
+            return node.path(this);
+        }*/
+        else {
+            TreeNode<T> ca = this.commonAncestor(node);
+            Collection<? extends TreeNode<T>> path1 = ca.pathBetweenNodes(this);
+            Collection<? extends TreeNode<T>> path2 = ca.pathBetweenNodes(node);
+            List<TreeNode<T>> path = new LinkedList<TreeNode<T>>();
+            for (TreeNode<T> ptn : path2)
+            {
+                path.add(ptn);
+            }
+            ((LinkedList<TreeNode<T>>) path).removeFirst();
+            List<TreeNode<T>> ReversePath2 = new LinkedList<TreeNode<T>>();
+            for (TreeNode<T> ptn : path1)
+            {
+                ((LinkedList<TreeNode<T>>) path).addFirst(ptn);
+
+               // path.addF(ptn);
+            }
+
+            return path;
+            //return ca.path(this);
+
+
+            /*System.out.println("Hello");
+            TreeNode<T> commonAncestor = node.commonAncestor(this);
+            System.out.println(commonAncestor.data);
+            Collection<? extends TreeNode<T>> pathCAtoThis = this.path(commonAncestor);
+            for (TreeNode<T> t : pathCAtoThis) {
+                nodePath.add(t);
+            }
+            /*Collection<? extends TreeNode<T>> pathCAtoNode = commonAncestor.path(node);
+            for (TreeNode<T> t : pathCAtoNode) {
+                nodePath.add(t);
+            }*/
+            //return nodePath;
+        }
+
+
+    }
+
 
 	/**
 	 * Returns the common ancestor of the current node and the node specified

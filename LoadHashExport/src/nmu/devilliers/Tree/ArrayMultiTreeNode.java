@@ -133,10 +133,13 @@ public class ArrayMultiTreeNode<T> extends MultiTreeNode<T> {
 		if (subtree == null) {
 			return false;
 		}
-		linkParent(subtree, this);
-		ensureSubtreesCapacity(subtreesSize + 1);
-		subtrees[subtreesSize++] = subtree;
-		return true;
+		if (!(subtree.isAncestorOf(this))) {
+			linkParent(subtree, this);
+			ensureSubtreesCapacity(subtreesSize + 1);
+			subtrees[subtreesSize++] = subtree;
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -483,7 +486,9 @@ public class ArrayMultiTreeNode<T> extends MultiTreeNode<T> {
 			return false;
 		}
 		for (MultiTreeNode<T> subtree : subtrees) {
-			linkParent(subtree, this);
+            if (!(subtree.isAncestorOf(this))) {//avoids cycles
+                linkParent(subtree, this);
+            }
 		}
 		Object[] subtreesArray = subtrees.toArray();
 		int subtreesArrayLength = subtreesArray.length;
